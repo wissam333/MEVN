@@ -50,7 +50,33 @@ export const dashboard = defineStore("dashboard", () => {
       alert(error);
     }
   };
-  getstates(token.value);
 
-  return { token, getIncom, incom, getstates, states };
+  let monthlyIncrease = ref();
+  let getMonthlyIncrease = async (token) => {
+    try {
+      const response = await axios.get(
+        "http://localhost:5000/api/dashboard/getSalesComparison",
+        {
+          headers: {
+            token: `Bearer ${token}`,
+          },
+        }
+      );
+      monthlyIncrease.value = response.data;
+      console.log(response);
+    } catch (error) {
+      console.error(error);
+      alert(error);
+    }
+  };
+
+  return {
+    token,
+    getIncom,
+    incom,
+    getstates,
+    states,
+    getMonthlyIncrease,
+    monthlyIncrease,
+  };
 });

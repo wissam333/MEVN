@@ -7,21 +7,25 @@
         <div class="col-sm-12 col-lg-4">
           <div class="congratulations box block-border">
             <img
-              src="../assets/download (1).png"
+              src="../assets/2.png"
               class="congratulations-img-left"
               width="150"
             />
             <img
-              src="../assets/download.png"
+              src="../assets/1.png"
               class="congratulations-img-right"
               width="150"
             />
             <div class="congratulations-content">
               <h4>
-                Congratulations
+                {{
+                  parseFloat(monthlyIncrease.message.match(/-?\d+\.?\d*/)) > 0
+                    ? " Congratulations! "
+                    : "Bad News! "
+                }}
                 <span style="color: #ff9fad; font-weight: 600">{{ name }}</span>
               </h4>
-              <p>You have done <strong>57.6%</strong> more sales today.</p>
+              <p>{{ monthlyIncrease.message }}</p>
               <button class="btn btn-success">View Sales</button>
             </div>
           </div>
@@ -38,28 +42,28 @@
               <div class="item sales">
                 <div class="icon"><i class="bi bi-cash-stack"></i></div>
                 <div class="desc">
-                  <h5>${{ states.totalSales }}</h5>
+                  <h5>${{ states?.totalSales }}</h5>
                   <p>Sales</p>
                 </div>
               </div>
               <div class="item customers">
                 <div class="icon"><i class="bi bi-people"></i></div>
                 <div class="desc">
-                  <h5>{{ states.users }}</h5>
+                  <h5>{{ states?.users }}</h5>
                   <p>Customers</p>
                 </div>
               </div>
               <div class="item orders">
                 <div class="icon"><i class="bi bi-cart-check"></i></div>
                 <div class="desc">
-                  <h5>{{ states.ordersCount }}</h5>
+                  <h5>{{ states?.ordersCount }}</h5>
                   <p>Orders</p>
                 </div>
               </div>
               <div class="item products">
                 <div class="icon"><i class="bi bi-box-seam"></i></div>
                 <div class="desc">
-                  <h5>{{ states.productsCount }}</h5>
+                  <h5>{{ states?.productsCount }}</h5>
                   <p>Products</p>
                 </div>
               </div>
@@ -91,14 +95,20 @@
 
 <script setup>
 import apexchart from "../components/charts/apexCharts.vue";
+import { onBeforeMount } from "vue";
 //store
 import { golbalVar, dashboard } from "../stores/counter";
 import { storeToRefs } from "pinia";
 const getData = golbalVar();
 const getDashboard = dashboard();
 const { sidebar } = storeToRefs(getData);
-const { states } = storeToRefs(getDashboard);
+const { token, states, monthlyIncrease } = storeToRefs(getDashboard);
 //end store
+
+onBeforeMount(async () => {
+  await getDashboard.getstates(token.value);
+  await getDashboard.getMonthlyIncrease(token.value);
+});
 </script>
 
 <style lang="scss" scoped>
