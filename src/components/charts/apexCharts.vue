@@ -1,7 +1,7 @@
 <template>
   <apexchart
     type="bar"
-    height="350"
+    height="340"
     :options="chartOptions"
     :series="series"
   ></apexchart>
@@ -22,7 +22,7 @@ const chartOptions = ref();
 let incomArray = Array.from({ length: 12 }).fill(0);
 onMounted(async () => {
   await getChartsData.getIncom(token.value);
-  incom.value.forEach((entry) => {
+  incom.value?.forEach((entry) => {
     incomArray[entry._id] = entry.total;
   });
 
@@ -46,8 +46,6 @@ onMounted(async () => {
     ],
     colors: ["#003d29", "#8b5cf6"],
     chart: {
-      type: "bar",
-      height: 350,
       toolbar: {
         show: false,
       },

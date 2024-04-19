@@ -3,7 +3,7 @@
     <!-- <h5>Dashboard /</h5>
     <hr /> -->
     <main>
-      <section class="dashboard-badges row">
+      <section class="dashboard-badges row gy-3">
         <div class="col-sm-12 col-lg-4">
           <div class="congratulations box block-border">
             <img
@@ -19,14 +19,22 @@
             <div class="congratulations-content">
               <h4>
                 {{
-                  parseFloat(monthlyIncrease.message.match(/-?\d+\.?\d*/)) > 0
+                  parseFloat(monthlyIncrease?.message.match(/-?\d+\.?\d*/)) > 0
                     ? " Congratulations! "
                     : "Bad News! "
                 }}
                 <span style="color: #ff9fad; font-weight: 600">{{ name }}</span>
               </h4>
-              <p>{{ monthlyIncrease.message }}</p>
-              <button class="btn btn-success">View Sales</button>
+              <p>
+                {{
+                  monthlyIncrease?.message
+                    ? monthlyIncrease?.message
+                    : "Connection error! please reload."
+                }}
+              </p>
+              <button v-if="monthlyIncrease?.message" class="btn btn-success">
+                View Sales
+              </button>
             </div>
           </div>
         </div>
@@ -42,49 +50,36 @@
               <div class="item sales">
                 <div class="icon"><i class="bi bi-cash-stack"></i></div>
                 <div class="desc">
-                  <h5>${{ states?.totalSales }}</h5>
+                  <h5>${{ states?.totalSales ? states?.totalSales : "0" }}</h5>
                   <p>Sales</p>
                 </div>
               </div>
               <div class="item customers">
                 <div class="icon"><i class="bi bi-people"></i></div>
                 <div class="desc">
-                  <h5>{{ states?.users }}</h5>
+                  <h5>{{ states?.users ? states?.users : "0" }}</h5>
                   <p>Customers</p>
                 </div>
               </div>
               <div class="item orders">
                 <div class="icon"><i class="bi bi-cart-check"></i></div>
                 <div class="desc">
-                  <h5>{{ states?.ordersCount }}</h5>
+                  <h5>{{ states?.ordersCount ? states?.ordersCount : "0" }}</h5>
                   <p>Orders</p>
                 </div>
               </div>
               <div class="item products">
                 <div class="icon"><i class="bi bi-box-seam"></i></div>
                 <div class="desc">
-                  <h5>{{ states?.productsCount }}</h5>
+                  <h5>
+                    {{ states?.productsCount ? states?.productsCount : "0" }}
+                  </h5>
                   <p>Products</p>
                 </div>
               </div>
             </div>
           </div>
         </div>
-        <!-- <div class="col-sm-12 col-lg-4">
-          <div class="medal card anim1">
-            <h5>Congratulations 🎉 {{ name }}!</h5>
-            <p>You have won gold medal</p>
-            <h3>$48.9k</h3>
-            <button class="btn btn-success" style="background-color: #ed8f9d">
-              View Sales
-            </button>
-            <img
-              src="https://demos.pixinvent.com/vuexy-vuejs-admin-template/demo-1/assets/congo-illustration-i9qbJLbF.png"
-              alt="Medal Pic"
-              class="congratulation-medal"
-            />
-          </div>
-        </div> -->
       </section>
       <section class="barChart box block-border">
         <apexchart></apexchart>
@@ -94,17 +89,19 @@
 </template>
 
 <script setup>
+// basic imports
 import apexchart from "../components/charts/apexCharts.vue";
 import { onBeforeMount } from "vue";
-//store
+
+// store
 import { golbalVar, dashboard } from "../stores/counter";
 import { storeToRefs } from "pinia";
 const getData = golbalVar();
 const getDashboard = dashboard();
 const { sidebar } = storeToRefs(getData);
 const { token, states, monthlyIncrease } = storeToRefs(getDashboard);
-//end store
 
+// getting dashboard data from database
 onBeforeMount(async () => {
   await getDashboard.getstates(token.value);
   await getDashboard.getMonthlyIncrease(token.value);
@@ -112,13 +109,6 @@ onBeforeMount(async () => {
 </script>
 
 <style lang="scss" scoped>
-// h5 {
-//   padding-top: 16px;
-//   font-weight: 600;
-// }
-// hr {
-//   margin-bottom: 25px;
-// }
 .contain {
   overflow-x: hidden;
   transition: all 0.3s linear;
@@ -126,7 +116,7 @@ onBeforeMount(async () => {
   background-color: #f8f7fa;
   float: right;
   margin-top: 83px;
-  padding-top: 16px;
+  padding: 16px;
   @media (max-width: 600px) {
     margin-top: 55px;
   }

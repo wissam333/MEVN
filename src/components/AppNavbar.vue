@@ -27,23 +27,64 @@
 
   <div class="sidebar box" :class="sidebar ? '' : 'open'">
     <ul class="main-links">
+      <router-link to="/">
+        <li
+          :class="activeLink == 'Dashboard' ? 'active' : ''"
+          @click="
+            activeLink = 'Dashboard';
+            subActiveLink = '';
+            productDropDown = false;
+          "
+        >
+          <i class="bi bi-bar-chart-line"></i>
+          <span>Dashboard</span>
+        </li>
+      </router-link>
+
       <li
-        :class="activeLink == 'Dashboard' ? 'active' : ''"
-        @click="activeLink = 'Dashboard'"
-      >
-        <i class="bi bi-bar-chart-line"></i>
-        <span>Dashboard</span>
-      </li>
-      <li
+        @click="
+          productDropDown = !productDropDown;
+          activeLink = 'Products';
+        "
+        class="d-flex align-items-center justify-content-between"
         :class="activeLink == 'Products' ? 'active' : ''"
-        @click="activeLink = 'Products'"
       >
-        <i class="bi bi-basket"></i>
-        <span>Products</span>
+        <div>
+          <i class="bi bi-basket"></i>
+          <span>Products</span>
+        </div>
+        <i
+          class="bi bi-caret-right-fill d-flex align-items-center justify-content-center"
+          :class="productDropDown ? 'active' : ''"
+        ></i>
       </li>
+      <!-- dropdown for products -->
+      <ul class="second-links" :class="productDropDown ? 'showLink' : ''">
+        <router-link to="/AddProduct">
+          <li
+            @click="subActiveLink = 'AddProducts'"
+            :class="subActiveLink == 'AddProducts' ? 'sub-active' : ''"
+          >
+            <i class="bi bi-circle"></i>
+            <span>Add</span>
+          </li>
+        </router-link>
+        <li
+          @click="subActiveLink = 'ListProducts'"
+          :class="subActiveLink == 'ListProducts' ? 'sub-active' : ''"
+        >
+          <i class="bi bi-circle"></i>
+          <span>List</span>
+        </li>
+      </ul>
+
       <li
         :class="activeLink == 'Customers' ? 'active' : ''"
-        @click="activeLink = 'Customers'"
+        @click="
+          activeLink = 'Customers';
+          productDropDown = false;
+          subActiveLink = '';
+        "
       >
         <i class="bi bi-people"></i>
         <span>Customers</span>
@@ -53,12 +94,17 @@
 </template>
 
 <script setup>
-//store
+// basic imports
+import { ref } from "vue";
+
+// store
 import { golbalVar } from "../stores/counter";
 import { storeToRefs } from "pinia";
 const getData = golbalVar();
-const { sidebar, activeLink } = storeToRefs(getData);
-//end store
+const { sidebar, activeLink, subActiveLink } = storeToRefs(getData);
+
+// variables
+let productDropDown = ref(false);
 </script>
 
 <style lang="scss" scoped>
@@ -191,7 +237,8 @@ const { sidebar, activeLink } = storeToRefs(getData);
   &.open {
     transform: translateX(-260px);
   }
-  .main-links {
+  .main-links,
+  .second-links {
     list-style: none;
     margin: 0;
     padding: 10px;
@@ -211,7 +258,32 @@ const { sidebar, activeLink } = storeToRefs(getData);
       }
       i {
         padding: 10px;
+        font-size: 20px;
+        height: 20px;
+        transition: all 0.3s linear;
+        &.active {
+          transform: rotate(90deg);
+        }
       }
+    }
+  }
+  .second-links {
+    transition: all 0.3s linear;
+    height: 0;
+    overflow: hidden;
+    padding: 0px 10px;
+    li {
+      &.sub-active {
+        color: #fff;
+        background: linear-gradient(118deg, #035d3f, #158862);
+      }
+      i {
+        font-size: 16px;
+      }
+    }
+    &.showLink {
+      height: 120px;
+      padding-top: 10px;
     }
   }
 }

@@ -5,19 +5,20 @@ import axios from "axios";
 export const golbalVar = defineStore("golbalVar", () => {
   let sidebar = ref(true);
   let activeLink = ref("Dashboard");
-  return { sidebar, activeLink };
+  let subActiveLink = ref("");
+  return { sidebar, activeLink, subActiveLink };
 });
 
 export const dashboard = defineStore("dashboard", () => {
   let token = ref(
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2MDllNDQ0NTRmNGExYTFiZmMzYmZiMSIsImlzQWRtaW4iOnRydWUsImlhdCI6MTcxMzE3NzAyNiwiZXhwIjoxNzEzNDM2MjI2fQ.Bv-dsvgKa_GF9zoxwP1GT0FDNF9m3E5C8FrkEFALBT8"
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2MDllNDQ0NTRmNGExYTFiZmMzYmZiMSIsImlzQWRtaW4iOnRydWUsImlhdCI6MTcxMzQ1MDM2OSwiZXhwIjoxNzEzNzA5NTY5fQ.D4kcmoYWVMg5w8-pLC0dM-wupN8NeqvnjKay0bSqaUY"
   );
 
   let incom = ref();
   let getIncom = async (token) => {
     try {
       const response = await axios.get(
-        "http://localhost:5000/api/dashboard/income",
+        "http://192.168.1.105:5000/api/dashboard/income",
         {
           headers: {
             token: `Bearer ${token}`,
@@ -28,7 +29,6 @@ export const dashboard = defineStore("dashboard", () => {
       console.log(response);
     } catch (error) {
       console.error(error);
-      alert(error);
     }
   };
 
@@ -36,7 +36,7 @@ export const dashboard = defineStore("dashboard", () => {
   let getstates = async (token) => {
     try {
       const response = await axios.get(
-        "http://localhost:5000/api/dashboard/dashboardStates",
+        "http://192.168.1.105:5000/api/dashboard/dashboardStates",
         {
           headers: {
             token: `Bearer ${token}`,
@@ -47,7 +47,6 @@ export const dashboard = defineStore("dashboard", () => {
       console.log(response);
     } catch (error) {
       console.error(error);
-      alert(error);
     }
   };
 
@@ -55,7 +54,7 @@ export const dashboard = defineStore("dashboard", () => {
   let getMonthlyIncrease = async (token) => {
     try {
       const response = await axios.get(
-        "http://localhost:5000/api/dashboard/getSalesComparison",
+        "http://192.168.1.105:5000/api/dashboard/getSalesComparison",
         {
           headers: {
             token: `Bearer ${token}`,
@@ -66,7 +65,6 @@ export const dashboard = defineStore("dashboard", () => {
       console.log(response);
     } catch (error) {
       console.error(error);
-      alert(error);
     }
   };
 

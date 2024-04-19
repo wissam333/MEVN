@@ -12,6 +12,9 @@ div {
 h5 {
     font-size: 18px;
 }
+h4 {
+    font-weight: 600;
+}
 
 .contain {
     padding: 10px 20px;
@@ -31,4 +34,42 @@ h5 {
 
 .block-border {
     border-radius: 8px;
+}
+
+ul {
+    padding: 0;
+}
+a {
+    text-decoration: none;
+}
+input,
+textarea {
+    padding: 7px 14px;
+    border-radius: 6px;
+    border: 1px solid #c5c5c5;
+    transition: all 0.2s linear;
+
+    &:hover {
+        border: 1px solid #898989;
+    }
+
+    &:focus,
+    &:focus-visible {
+        box-shadow: 0px 2px 6px rgba(4, 119, 81, 0.3);
+        border: 1px solid #19ad7b;
+        border-radius: 6px;
+        outline: 0;
+
+        + label {
+            color: #19ad7b;
+        }
+        &::placeholder {
+            padding-left: 4px;
+        }
+    }
+    &::placeholder {
+        color: #c5c5c5;
+        font-size: 15px;
+        transition: all 0.2s linear;
+    }
 }
