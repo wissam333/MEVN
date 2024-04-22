@@ -8,20 +8,20 @@
 </template>
 
 <script setup>
+import { ref, onBeforeMount } from "vue";
+// store
 import { dashboard } from "../../stores/counter";
 import { storeToRefs } from "pinia";
-import { ref, onMounted } from "vue";
-
 const getChartsData = dashboard();
-const { token, incom } = storeToRefs(getChartsData);
-//end store
+const { incom } = storeToRefs(getChartsData);
 
 const series = ref();
 const chartOptions = ref();
 
+const token = localStorage.getItem("token");
 let incomArray = Array.from({ length: 12 }).fill(0);
-onMounted(async () => {
-  await getChartsData.getIncom(token.value);
+onBeforeMount(async () => {
+  await getChartsData.getIncom(token);
   incom.value?.forEach((entry) => {
     incomArray[entry._id] = entry.total;
   });

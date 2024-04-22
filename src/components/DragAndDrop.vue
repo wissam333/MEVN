@@ -11,37 +11,28 @@
         style="display: none"
         @change="handleFileInput"
       />
-      <h5>{{ dropMessage }}</h5>
+      <h5 class="fw-bold">{{ dropMessage }}</h5>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
-
-const uploadedImage = ref(null);
-const imageName = ref("");
-
-const convertImageToFormData = (file) => {
-  const formData = new FormData();
-  formData.append("image", file);
-  uploadedImage.value = formData;
-  imageName.value = file.name;
-};
+import { computed } from "vue";
+// store
+import { product } from "../stores/counter";
+import { storeToRefs } from "pinia";
+const getData = product();
+const { productImage, imageName } = storeToRefs(getData);
 
 const handleDrop = (event) => {
   event.preventDefault();
-  const file = event.dataTransfer.files[0];
-  if (file && file.type.startsWith("image/")) {
-    convertImageToFormData(file);
-  }
+  productImage.value = event.dataTransfer.files[0];
+  imageName.value = productImage.value.name;
 };
 
 const handleFileInput = (event) => {
-  const file = event.target.files[0];
-  if (file && file.type.startsWith("image/")) {
-    convertImageToFormData(file);
-  }
+  productImage.value = event.target.files[0];
+  imageName.value = productImage.value.name;
 };
 
 const dropMessage = computed(() => {

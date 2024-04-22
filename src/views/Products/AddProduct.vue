@@ -1,17 +1,21 @@
 <template>
-  <div class="contain" :class="sidebar ? 'shrink' : ''">
+  <form
+    class="contain"
+    :class="sidebar ? 'shrink' : ''"
+    @submit.prevent="addProduct"
+  >
     <div class="title-container">
       <div class="head-title">
         <h4>Add a new product</h4>
         <p>All Products are listed <router-link to="/">here</router-link></p>
       </div>
       <div class="mt-2">
-        <button class="btn btn-success">Publish Product</button>
+        <input type="submit" value="Publish Product" class="btn btn-success" />
       </div>
     </div>
 
     <main>
-      <form class="row gy-3">
+      <div class="form row gy-3">
         <div class="col-sm-12 col-lg-8">
           <div class="main-info box block-border">
             <h5>Product Information</h5>
@@ -19,6 +23,7 @@
             <div class="d-flex flex-column">
               <div class="d-flex flex-column-reverse mb-3">
                 <input
+                  v-model="title"
                   id="title"
                   type="text"
                   required
@@ -30,6 +35,7 @@
 
               <div class="d-flex flex-column-reverse mb-3">
                 <textarea
+                  v-model="desc"
                   id="description"
                   rows="5"
                   required
@@ -62,7 +68,7 @@
             </div>
 
             <p>Please Select Sizes</p>
-            <div class="circles" :class="locale === 'ar' ? 'ar' : ''">
+            <div class="circles">
               <div
                 @click="activeSizesFunc(size)"
                 :class="activeSize.includes(size) ? 'active' : ''"
@@ -79,7 +85,7 @@
         <div class="col-sm-12 col-lg-8">
           <div class="uplod-image box block-border">
             <h5>Product Image</h5>
-            <DragAndDrop></DragAndDrop>
+            <DragAndDrop :uploadedImage="uploadedImage"></DragAndDrop>
           </div>
         </div>
 
@@ -90,6 +96,7 @@
             <div class="d-flex flex-column">
               <div class="d-flex flex-column-reverse mb-3">
                 <input
+                  v-model="price"
                   id="price"
                   type="number"
                   required
@@ -102,7 +109,8 @@
               <p>Please Select Categories</p>
               <div id="categories">
                 <div class="custom-select">
-                  <select>
+                  <select v-model="selectedCat">
+                    <option value="" selected disabled>New Category</option>
                     <option v-for="cat in categories" :value="cat">
                       {{ cat }}
                     </option>
@@ -111,25 +119,37 @@
                     <i class="bi bi-plus"></i>
                   </div>
                 </div>
+                <div
+                  class="category badge bg-success me-2 p-2"
+                  v-for="activeCat in activeCategories"
+                >
+                  {{ activeCat }}
+                  <i
+                    class="bi bi-trash3 ms-2"
+                    @click="deleteCat(activeCat)"
+                  ></i>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </form>
+      </div>
     </main>
-  </div>
+  </form>
 </template>
 <script setup>
 // basic imports
 import { ref } from "vue";
 import DragAndDrop from "../../components/DragAndDrop.vue";
 // store
-import { golbalVar, dashboard } from "../../stores/counter";
+import { product, golbalVar } from "../../stores/counter";
 import { storeToRefs } from "pinia";
-const getData = golbalVar();
-// const getDashboard = dashboard();
-const { sidebar } = storeToRefs(getData);
-// const { token, states, monthlyIncrease } = storeToRefs(getDashboard);
+const getGolbalVar = golbalVar();
+const { sidebar } = storeToRefs(getGolbalVar);
+const productAPI = product();
+// toast imports
+import { useToast } from "vue-toast-notification";
+import "vue-toast-notification/dist/theme-sugar.css";
 
 // color picker
 const colors = ref([
@@ -167,23 +187,75 @@ const activeSizesFunc = (e) => {
 };
 
 // categories
-let categories = ref(["Men", "Women", "Electronics"]);
+let selectedCat = ref("");
+let categories = ref(["Women", "Electronics"]);
+let activeCategories = ref(["Men"]);
+// add category
 const addCat = () => {
-  let cats = document.getElementById("categories");
-  let customSelectDiv = document.createElement("div");
-  const selectHTML = categories.value
-    .map((cat) => `<option value="${cat}">${cat}</option>`)
-    .join("");
-  customSelectDiv.classList.add("custom-select");
-  customSelectDiv.innerHTML = `
-                <select>
-                  ${selectHTML}
-                </select>
-                <div class="plus-icon" @click="addCat">
-                  <i class="bi bi-plus"></i>
-                </div>
-              `;
-  cats.appendChild(customSelectDiv);
+  if (selectedCat.value) {
+    let category = selectedCat.value;
+    activeCategories.value.push(category);
+    const index = categories.value.indexOf(selectedCat.value);
+    if (index !== -1) {
+      categories.value.splice(index, 1);
+    }
+    selectedCat.value = "";
+  }
+};
+
+// delete category
+const deleteCat = (activeCat) => {
+  const index = activeCategories.value.indexOf(activeCat);
+  if (index !== -1) {
+    activeCategories.value.splice(index, 1);
+  }
+  categories.value.push(activeCat);
+};
+
+// publish product
+const uploadedImage = ref(null);
+let title = ref();
+let desc = ref();
+let price = ref();
+let productData = ref();
+
+const token = localStorage.getItem("token");
+const addProduct = async () => {
+  productData.value = {
+    title: title.value,
+    desc: desc.value,
+    price: price.value,
+    color: activeColor.value,
+    size: activeSize.value,
+    categories: activeCategories.value,
+  };
+  const res = await productAPI.addProduct(token, productData.value);
+  if (res.status === 201 || res.status === 200) {
+    success();
+  } else {
+    faild(res.data.message);
+  }
+  // restore default input fields
+  title.value = "";
+  desc.value = "";
+  price.value = 0;
+  activeColor.value = [];
+  activeSize.value = [];
+  activeCategories.value = ["Men"];
+  categories.value = ["Women", "Electronics"];
+};
+
+// Toast Management
+const $toast = useToast();
+let success = () => {
+  $toast.success("Product Added Successfully", {
+    position: "bottom-right",
+  });
+};
+let faild = (message) => {
+  $toast.error(message.substring(0, 1).toUpperCase() + message.substring(1), {
+    position: "bottom-right",
+  });
 };
 </script>
 <style lang="scss">
@@ -225,7 +297,7 @@ const addCat = () => {
       }
     }
   }
-  form {
+  .form {
     .main-info,
     .second-info {
       padding: 25px;
@@ -330,6 +402,19 @@ const addCat = () => {
         width: 45px;
         height: 45px;
         background-color: #19ad7b;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        cursor: pointer;
+      }
+      .delete-cat {
+        font-size: 20px;
+        padding: 10px;
+        width: 45px;
+        height: 45px;
+        background-color: #d83845;
         border-radius: 6px;
         display: flex;
         align-items: center;

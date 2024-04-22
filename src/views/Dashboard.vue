@@ -99,12 +99,13 @@ import { storeToRefs } from "pinia";
 const getData = golbalVar();
 const getDashboard = dashboard();
 const { sidebar } = storeToRefs(getData);
-const { token, states, monthlyIncrease } = storeToRefs(getDashboard);
+const { states, monthlyIncrease } = storeToRefs(getDashboard);
 
+const token = localStorage.getItem("token");
 // getting dashboard data from database
 onBeforeMount(async () => {
-  await getDashboard.getstates(token.value);
-  await getDashboard.getMonthlyIncrease(token.value);
+  await getDashboard.getstates(token);
+  await getDashboard.getMonthlyIncrease(token);
 });
 </script>
 
@@ -215,6 +216,9 @@ onBeforeMount(async () => {
         }
         h5 {
           color: #434050;
+          @media (max-width: 600px) {
+            font-size: 16px;
+          }
         }
       }
       &.sales {

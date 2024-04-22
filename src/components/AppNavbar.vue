@@ -27,7 +27,7 @@
 
   <div class="sidebar box" :class="sidebar ? '' : 'open'">
     <ul class="main-links">
-      <router-link to="/">
+      <router-link to="/HomeView/Dashboard">
         <li
           :class="activeLink == 'Dashboard' ? 'active' : ''"
           @click="
@@ -60,22 +60,35 @@
       </li>
       <!-- dropdown for products -->
       <ul class="second-links" :class="productDropDown ? 'showLink' : ''">
-        <router-link to="/AddProduct">
+        <router-link to="/HomeView/AddProduct">
           <li
             @click="subActiveLink = 'AddProducts'"
             :class="subActiveLink == 'AddProducts' ? 'sub-active' : ''"
           >
-            <i class="bi bi-circle"></i>
+            <i class="bi bi-plus-circle"></i>
             <span>Add</span>
           </li>
         </router-link>
-        <li
-          @click="subActiveLink = 'ListProducts'"
-          :class="subActiveLink == 'ListProducts' ? 'sub-active' : ''"
-        >
-          <i class="bi bi-circle"></i>
-          <span>List</span>
-        </li>
+
+        <router-link to="/">
+          <li
+            @click="subActiveLink = 'ListProducts'"
+            :class="subActiveLink == 'ListProducts' ? 'sub-active' : ''"
+          >
+            <i class="bi bi-list-ul"></i>
+            <span>List</span>
+          </li>
+        </router-link>
+
+        <router-link to="/">
+          <li
+            @click="subActiveLink = 'Category'"
+            :class="subActiveLink == 'Category' ? 'sub-active' : ''"
+          >
+            <i class="bi bi-tags"></i>
+            <span>Category</span>
+          </li>
+        </router-link>
       </ul>
 
       <li
@@ -88,6 +101,18 @@
       >
         <i class="bi bi-people"></i>
         <span>Customers</span>
+      </li>
+
+      <li
+        :class="activeLink == 'Orders' ? 'active' : ''"
+        @click="
+          activeLink = 'Orders';
+          productDropDown = false;
+          subActiveLink = '';
+        "
+      >
+        <i class="bi bi-cash-coin"></i>
+        <span>Orders</span>
       </li>
     </ul>
   </div>
@@ -118,6 +143,7 @@ let productDropDown = ref(false);
     background-color: #fff;
     padding: 10px 20px;
     width: 100vw;
+    box-shadow: 0 2px 5px 0 rgb(0 0 0 / 5%), 0 2px 10px 0 rgb(0 0 0 / 5%);
     .left-section {
       display: flex;
       align-items: center;
@@ -224,7 +250,7 @@ let productDropDown = ref(false);
   background-color: #fff;
   width: 260px;
   position: fixed;
-  top: 83px;
+  top: 77.6px;
   bottom: 0;
   left: 0;
   box-shadow: 0 2px 5px 0 rgb(0 0 0 / 5%), 0 2px 10px 0 rgb(0 0 0 / 5%);
@@ -282,7 +308,7 @@ let productDropDown = ref(false);
       }
     }
     &.showLink {
-      height: 120px;
+      height: 170px;
       padding-top: 10px;
     }
   }

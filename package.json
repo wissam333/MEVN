@@ -4,6 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "local": "vite --host 192.168.1.105",
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
@@ -18,7 +19,8 @@
     "sass": "^1.74.1",
     "vue": "^3.4.21",
     "vue-router": "^4.3.0",
-    "vue3-apexcharts": "^1.4.1"
+    "vue3-apexcharts": "^1.4.1",
+    "vue-toast-notification": "^3.1.2"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.0.4",

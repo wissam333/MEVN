@@ -1,6 +1,34 @@
-import { ref, computed } from "vue";
+import { ref } from "vue";
 import { defineStore } from "pinia";
+import { useRouter } from "vue-router";
 import axios from "axios";
+
+export const auth = defineStore("auth", () => {
+  const router = useRouter();
+
+  let login = async (data) => {
+    try {
+      const response = await axios.post(
+        "http://localhost:5000/api/auth/login",
+        data,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      console.log(response);
+      localStorage.setItem("token", response.data.accessToken);
+      localStorage.setItem("success", true);
+      router.push("/HomeView/Dashboard");
+      return response;
+    } catch (error) {
+      console.error(error);
+      return error.response;
+    }
+  };
+  return { login };
+});
 
 export const golbalVar = defineStore("golbalVar", () => {
   let sidebar = ref(true);
@@ -10,10 +38,6 @@ export const golbalVar = defineStore("golbalVar", () => {
 });
 
 export const dashboard = defineStore("dashboard", () => {
-  let token = ref(
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2MDllNDQ0NTRmNGExYTFiZmMzYmZiMSIsImlzQWRtaW4iOnRydWUsImlhdCI6MTcxMzQ1MDM2OSwiZXhwIjoxNzEzNzA5NTY5fQ.D4kcmoYWVMg5w8-pLC0dM-wupN8NeqvnjKay0bSqaUY"
-  );
-
   let incom = ref();
   let getIncom = async (token) => {
     try {
@@ -69,12 +93,57 @@ export const dashboard = defineStore("dashboard", () => {
   };
 
   return {
-    token,
     getIncom,
     incom,
     getstates,
     states,
     getMonthlyIncrease,
     monthlyIncrease,
+  };
+});
+
+export const product = defineStore("product", () => {
+  let productImage = ref();
+  let imageName = ref();
+  let addProduct = async (token, data) => {
+    try {
+      const formData = new FormData();
+      data.color.forEach((color, index) => {
+        formData.append(`color[${index}]`, color);
+      });
+      data.size.forEach((size, index) => {
+        formData.append(`size[${index}]`, size);
+      });
+      data.categories.forEach((categorie, index) => {
+        formData.append(`categories[${index}]`, categorie);
+      });
+      formData.append("title", data.title);
+      formData.append("desc", data.desc);
+      formData.append("price", data.price);
+      formData.append("imgName", imageName.value);
+      formData.append("img", productImage.value);
+
+      const response = await axios.post(
+        "http://192.168.1.105:5000/api/products",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            token: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log(response);
+      return response;
+    } catch (error) {
+      console.error(error);
+      return error.response;
+    }
+  };
+
+  return {
+    addProduct,
+    productImage,
+    imageName,
   };
 });
