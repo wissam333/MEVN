@@ -25,7 +25,7 @@ onBeforeMount(async () => {
     getIncomExcuted.value = true;
   }
   incom.value?.forEach((entry) => {
-    incomArray[entry._id - 1] = entry.total;
+    incomArray[entry._id] = entry.total;
   });
 
   series.value = [
