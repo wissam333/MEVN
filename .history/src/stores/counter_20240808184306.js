@@ -3,7 +3,7 @@ import { defineStore } from "pinia";
 import { useRouter } from "vue-router";
 import axios from "axios";
 
-const HOST = "192.168.43.115";
+const HOST = "192.168.1.102";
 
 export const auth = defineStore("auth", () => {
   const router = useRouter();
@@ -393,7 +393,7 @@ export const Customers = defineStore("Customers", () => {
         },
       });
       console.log(response);
-      return response.data;
+      return response.data.users;
     } catch (error) {
       console.error(error);
     } finally {

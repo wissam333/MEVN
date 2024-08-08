@@ -3,7 +3,7 @@ import { defineStore } from "pinia";
 import { useRouter } from "vue-router";
 import axios from "axios";
 
-const HOST = "192.168.43.115";
+const HOST = "192.168.1.102";
 
 export const auth = defineStore("auth", () => {
   const router = useRouter();
