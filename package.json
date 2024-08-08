@@ -4,7 +4,10 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "local": "vite --host 192.168.1.105",
+    "local": "vite --host 192.168.1.102",
+    "hussen": "vite --host 192.168.43.97",
+    "uni": "vite --host 172.20.22.203",
+    "wissam": "vite --host 192.168.43.115",
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",

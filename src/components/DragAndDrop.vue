@@ -23,23 +23,64 @@ import { product } from "../stores/counter";
 import { storeToRefs } from "pinia";
 const getData = product();
 const { productImage, imageName } = storeToRefs(getData);
+// toast imports
+import { useToast } from "vue-toast-notification";
+import "vue-toast-notification/dist/theme-sugar.css";
+
+// Maximum file size in megabytes
+const MAX_FILE_SIZE_MB = 2;
 
 const handleDrop = (event) => {
   event.preventDefault();
-  productImage.value = event.dataTransfer.files[0];
-  imageName.value = productImage.value.name;
+  const file = event.dataTransfer.files[0];
+
+  if (file && file.size <= MAX_FILE_SIZE_MB * 1024 * 1024) {
+    success();
+    productImage.value = file;
+    imageName.value = file.name;
+  } else {
+    productImage.value = null;
+    imageName.value = "";
+    faild(
+      `Image size exceeds the maximum allowed (${MAX_FILE_SIZE_MB}MB). Please select a smaller image.`
+    );
+  }
 };
 
 const handleFileInput = (event) => {
-  productImage.value = event.target.files[0];
-  imageName.value = productImage.value.name;
+  const file = event.target.files[0];
+  if (file && file.size <= MAX_FILE_SIZE_MB * 1024 * 1024) {
+    success();
+    productImage.value = file;
+    imageName.value = file.name;
+  } else {
+    productImage.value = null;
+    imageName.value = "";
+    faild(
+      `Image size exceeds the maximum allowed (${MAX_FILE_SIZE_MB}MB). Please select a smaller image.`
+    );
+  }
 };
 
+// drop message
 const dropMessage = computed(() => {
   return imageName.value
     ? `Dropped image: ${imageName.value}`
     : "Drag & drop an image here";
 });
+
+// Toast Management
+const $toast = useToast();
+let faild = (message) => {
+  $toast.error(message, {
+    position: "bottom-right",
+  });
+};
+let success = () => {
+  $toast.success("Image uploded successfully", {
+    position: "bottom-right",
+  });
+};
 </script>
 
 <style lang="scss" scoped>

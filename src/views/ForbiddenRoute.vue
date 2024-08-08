@@ -95,7 +95,7 @@ body {
 
 .notfound p {
   font-family: "Nunito", sans-serif;
-  color: #717171;
+  color: #333;
   font-weight: 400;
 }
 

@@ -32,9 +32,11 @@
                     : "Connection error! please reload."
                 }}
               </p>
+              <router-link to="/HomeView/Orders">
               <button v-if="monthlyIncrease?.message" class="btn btn-success">
-                View Sales
+                View Orders
               </button>
+            </router-link>
             </div>
           </div>
         </div>
@@ -82,7 +84,7 @@
         </div>
       </section>
       <section class="barChart box block-border">
-        <apexchart></apexchart>
+        <DashboardChart></DashboardChart>
       </section>
     </main>
   </div>
@@ -90,22 +92,26 @@
 
 <script setup>
 // basic imports
-import apexchart from "../components/charts/apexCharts.vue";
+import DashboardChart from "../components/charts/DashboardChart.vue";
 import { onBeforeMount } from "vue";
-
 // store
 import { golbalVar, dashboard } from "../stores/counter";
 import { storeToRefs } from "pinia";
 const getData = golbalVar();
 const getDashboard = dashboard();
 const { sidebar } = storeToRefs(getData);
-const { states, monthlyIncrease } = storeToRefs(getDashboard);
+const { states, monthlyIncrease, getStatesExcuted, getMonthlyIncreaseExcuted } =
+  storeToRefs(getDashboard);
 
-const token = localStorage.getItem("token");
 // getting dashboard data from database
 onBeforeMount(async () => {
-  await getDashboard.getstates(token);
-  await getDashboard.getMonthlyIncrease(token);
+  if (!getStatesExcuted.value && !getMonthlyIncreaseExcuted.value) {
+    await getDashboard.getstates();
+    await getDashboard.getMonthlyIncrease();
+
+    getStatesExcuted.value = true;
+    getMonthlyIncreaseExcuted.value = true;
+  }
 });
 </script>
 
@@ -116,7 +122,8 @@ onBeforeMount(async () => {
   width: 100%;
   background-color: #f8f7fa;
   float: right;
-  margin-top: 83px;
+  min-height: calc(100vh - 77.6px);
+  margin-top: 77.6px;
   padding: 16px;
   @media (max-width: 600px) {
     margin-top: 55px;

@@ -6,8 +6,11 @@
   >
     <div class="title-container">
       <div class="head-title">
-        <h4>Add a new product</h4>
-        <p>All Products are listed <router-link to="/">here</router-link></p>
+        <h4 class="header4">Add a new product</h4>
+        <p>
+          All Products are listed
+          <router-link to="/HomeView/ListProduct"> here</router-link>
+        </p>
       </div>
       <div class="mt-2">
         <input type="submit" value="Publish Product" class="btn btn-success" />
@@ -28,7 +31,10 @@
                   type="text"
                   required
                   maxlength="30"
+                  autocomplete="off"
                   placeholder="Coton Shirt"
+                  pattern="[A-Za-z\s]+"
+                  title="Enter only letters and spaces"
                 />
                 <label for="title">Name</label>
               </div>
@@ -100,7 +106,8 @@
                   id="price"
                   type="number"
                   required
-                  maxlength="30"
+                  maxlength="6"
+                  min="0"
                   placeholder="Price"
                 />
                 <label for="price">Price</label>
@@ -217,19 +224,20 @@ const uploadedImage = ref(null);
 let title = ref();
 let desc = ref();
 let price = ref();
+let quantity = ref();
 let productData = ref();
 
-const token = localStorage.getItem("token");
 const addProduct = async () => {
   productData.value = {
     title: title.value,
     desc: desc.value,
     price: price.value,
+    quantity: quantity.value,
     color: activeColor.value,
     size: activeSize.value,
     categories: activeCategories.value,
   };
-  const res = await productAPI.addProduct(token, productData.value);
+  const res = await productAPI.addProduct(productData.value);
   if (res.status === 201 || res.status === 200) {
     success();
   } else {
@@ -239,6 +247,7 @@ const addProduct = async () => {
   title.value = "";
   desc.value = "";
   price.value = 0;
+  quantity.value = 1;
   activeColor.value = [];
   activeSize.value = [];
   activeCategories.value = ["Men"];
@@ -263,9 +272,10 @@ let faild = (message) => {
   overflow-x: hidden;
   transition: all 0.3s linear;
   width: 100%;
+  min-height: calc(100vh - 77.6px);
   background-color: #f8f7fa;
   float: right;
-  margin-top: 83px;
+  margin-top: 77.6px;
   padding: 16px;
   @media (max-width: 600px) {
     margin-top: 55px;

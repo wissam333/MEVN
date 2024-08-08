@@ -1,6 +1,6 @@
 <template>
   <section class="sign gradient-form">
-    <div class="container py-4 h-100">
+    <div class="container">
       <div class="row d-flex justify-content-center align-items-center h-100">
         <div class="col-xl-10">
           <div class="card rounded-3 text-black">
@@ -87,7 +87,6 @@
 import { ref } from "vue";
 // store
 import { auth } from "../stores/counter";
-import { storeToRefs } from "pinia";
 const authOperation = auth();
 // toast imports
 import { useToast } from "vue-toast-notification";
@@ -130,6 +129,8 @@ let faild = (message) => {
 .sign {
   background-color: #eee;
   min-height: 100vh;
+  display: flex;
+  align-items: center;
   .title {
     color: #003d29;
   }

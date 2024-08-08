@@ -17,9 +17,6 @@ import "bootstrap-icons/font/bootstrap-icons.css";
 /* apex chart */
 import VueApexCharts from "vue3-apexcharts";
 
-/* Toast */
-import ToastPlugin from "vue-toast-notification";
-
 const app = createApp(App);
 
 app.use(createPinia());

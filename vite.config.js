@@ -8,7 +8,8 @@ import VueDevTools from "vite-plugin-vue-devtools";
 export default defineConfig({
   base: "/MEVN/",
   assetsDir: "assets",
-  plugins: [vue(), VueDevTools()],
+  // plugins: [vue(), VueDevTools()],
+  plugins: [vue()],
   resolve: {
     alias: {
       "@": fileURLToPath(new URL("./src", import.meta.url)),

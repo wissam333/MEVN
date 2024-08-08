@@ -9,13 +9,43 @@ div {
     margin: 0;
 }
 
+body {
+    *::selection {
+        color: #fff;
+        background: #19ad7b;
+    }
+    /* For Mozilla Firefox */
+    *::-moz-selection {
+        color: #fff;
+        background: #19ad7b;
+    }
+    ::-webkit-scrollbar {
+        width: 6px !important; /* Set your desired width */
+        height: 6px !important;
+    }
+    ::-webkit-scrollbar-thumb {
+        background-color: #19ad7b !important; /* Set your desired thumb color */
+        cursor: pointer !important;
+    }
+}
+::-webkit-scrollbar {
+    width: 6px !important; /* Set your desired width */
+    height: 6px !important;
+}
+::-webkit-scrollbar-thumb {
+    background-color: #19ad7b !important; /* Set your desired thumb color */
+    cursor: pointer !important;
+}
+
 h5 {
     font-size: 18px;
 }
-h4 {
+.btn-success {
+    background-color: #19ad7b !important;
+}
+.header4 {
     font-weight: 600;
 }
-
 .contain {
     padding: 10px 20px;
     @media (max-width: 768px) {
@@ -74,4 +104,8 @@ textarea {
         font-size: 15px;
         transition: all 0.2s linear;
     }
+}
+
+hr {
+    margin: 1.5rem 0;
 }

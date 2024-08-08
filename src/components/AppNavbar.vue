@@ -30,11 +30,7 @@
       <router-link to="/HomeView/Dashboard">
         <li
           :class="activeLink == 'Dashboard' ? 'active' : ''"
-          @click="
-            activeLink = 'Dashboard';
-            subActiveLink = '';
-            productDropDown = false;
-          "
+          @click="productDropDown = false"
         >
           <i class="bi bi-bar-chart-line"></i>
           <span>Dashboard</span>
@@ -61,67 +57,61 @@
       <!-- dropdown for products -->
       <ul class="second-links" :class="productDropDown ? 'showLink' : ''">
         <router-link to="/HomeView/AddProduct">
-          <li
-            @click="subActiveLink = 'AddProducts'"
-            :class="subActiveLink == 'AddProducts' ? 'sub-active' : ''"
-          >
+          <li :class="subActiveLink == 'AddProducts' ? 'sub-active' : ''">
             <i class="bi bi-plus-circle"></i>
-            <span>Add</span>
+            <span>Add Product</span>
           </li>
         </router-link>
 
-        <router-link to="/">
-          <li
-            @click="subActiveLink = 'ListProducts'"
-            :class="subActiveLink == 'ListProducts' ? 'sub-active' : ''"
-          >
+        <router-link to="/HomeView/ListProduct">
+          <li :class="subActiveLink == 'ListProducts' ? 'sub-active' : ''">
             <i class="bi bi-list-ul"></i>
-            <span>List</span>
+            <span>Products List</span>
           </li>
         </router-link>
 
-        <router-link to="/">
-          <li
-            @click="subActiveLink = 'Category'"
-            :class="subActiveLink == 'Category' ? 'sub-active' : ''"
-          >
+        <router-link to="/HomeView/AddInventory">
+          <li :class="subActiveLink == 'AddInventory' ? 'sub-active' : ''">
             <i class="bi bi-tags"></i>
-            <span>Category</span>
+            <span>Add Inventory</span>
+          </li>
+        </router-link>
+
+        <router-link to="/HomeView/ListInventory">
+          <li :class="subActiveLink == 'ListInventory' ? 'sub-active' : ''">
+            <i class="bi bi-tags"></i>
+            <span>Inventory List</span>
           </li>
         </router-link>
       </ul>
 
-      <li
-        :class="activeLink == 'Customers' ? 'active' : ''"
-        @click="
-          activeLink = 'Customers';
-          productDropDown = false;
-          subActiveLink = '';
-        "
-      >
-        <i class="bi bi-people"></i>
-        <span>Customers</span>
-      </li>
+      <router-link to="/HomeView/Customers">
+        <li
+          :class="activeLink == 'Customers' ? 'active' : ''"
+          @click="productDropDown = false"
+        >
+          <i class="bi bi-people"></i>
+          <span>Customers</span>
+        </li>
+      </router-link>
 
-      <li
-        :class="activeLink == 'Orders' ? 'active' : ''"
-        @click="
-          activeLink = 'Orders';
-          productDropDown = false;
-          subActiveLink = '';
-        "
-      >
-        <i class="bi bi-cash-coin"></i>
-        <span>Orders</span>
-      </li>
+      <router-link to="/HomeView/Orders">
+        <li
+          :class="activeLink == 'Orders' ? 'active' : ''"
+          @click="productDropDown = false"
+        >
+          <i class="bi bi-cash-coin"></i>
+          <span>Orders</span>
+        </li>
+      </router-link>
     </ul>
   </div>
 </template>
 
 <script setup>
 // basic imports
-import { ref } from "vue";
-
+import { ref, watchEffect } from "vue";
+import { useRoute } from "vue-router";
 // store
 import { golbalVar } from "../stores/counter";
 import { storeToRefs } from "pinia";
@@ -130,6 +120,48 @@ const { sidebar, activeLink, subActiveLink } = storeToRefs(getData);
 
 // variables
 let productDropDown = ref(false);
+
+// Watch for route changes and update activeTap accordingly
+const route = useRoute();
+watchEffect(() => {
+  if (route.path.includes("/HomeView/Dashboard")) {
+    subActiveLink.value = "";
+    productDropDown.value = false;
+    activeLink.value = "Dashboard";
+  } else if (route.path.includes("/HomeView/AddProduct")) {
+    subActiveLink.value = "AddProducts";
+    activeLink.value = "Products";
+    productDropDown.value = true;
+  } else if (route.path.includes("/HomeView/ListProduct")) {
+    subActiveLink.value = "ListProducts";
+    productDropDown.value = true;
+    activeLink.value = "Products";
+  } else if (route.path.includes("/HomeView/Dashboard")) {
+    subActiveLink.value = "";
+    productDropDown.value = false;
+    activeLink.value = "Category";
+  } else if (route.path.includes("/HomeView/ProductInfo")) {
+    subActiveLink.value = "ListProducts";
+    productDropDown.value = true;
+    activeLink.value = "Products";
+  } else if (route.path.includes("/HomeView/AddInventory")) {
+    subActiveLink.value = "AddInventory";
+    productDropDown.value = true;
+    activeLink.value = "Products";
+  } else if (route.path.includes("/HomeView/ListInventory")) {
+    subActiveLink.value = "ListInventory";
+    productDropDown.value = true;
+    activeLink.value = "Products";
+  }else if (route.path.includes("/HomeView/Orders")) {
+    subActiveLink.value = "";
+    productDropDown.value = false;
+    activeLink.value = "Orders";
+  }else if (route.path.includes("/HomeView/Customers")) {
+    subActiveLink.value = "";
+    productDropDown.value = false;
+    activeLink.value = "Customers";
+  }
+});
 </script>
 
 <style lang="scss" scoped>
@@ -308,7 +340,7 @@ let productDropDown = ref(false);
       }
     }
     &.showLink {
-      height: 170px;
+      height: 214px;
       padding-top: 10px;
     }
   }
